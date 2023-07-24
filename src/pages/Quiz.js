@@ -1,6 +1,7 @@
+import '../styles/Quiz.css';
 import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import Questions from './Questions';
+import Questions from '../components/Questions';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** redux store import */

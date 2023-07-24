@@ -1,3 +1,4 @@
+import '../styles/Questions.css';
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import QuestionCounter from './QuestionCounter';

@@ -1,0 +1,11 @@
+.quiz-container ul .wrong-answer {
+  background: rgba(255, 0, 0, 0.3);
+  /* background: #ffd6ff; */
+  border: 1px solid #000000;
+}
+
+.quiz-container ul .right-answer {
+  background: rgba(0, 151, 19, 0.3);
+  /* background: #ffd6ff; */
+  border: 1px solid #000000;
+}

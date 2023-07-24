@@ -1,0 +1,12 @@
+/* Add styles for the Link element */
+.link-button {
+  background: linear-gradient(90.04deg, #220080 0.03%, #ffc0cb 99.96%);
+  border-radius: 9px;
+  font-size: 18px;
+  color: #ffffff;
+  padding: 10px 40px;
+  display: inline-block;
+  text-align: center;
+  margin-top: 15px;
+  text-decoration: none;
+}

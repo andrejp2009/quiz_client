@@ -1,0 +1,12 @@
+.next-prev-button {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.next-prev-button .button-container {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

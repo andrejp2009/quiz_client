@@ -1,13 +1,13 @@
-import '../styles/App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 /** import componets **/
-import Main from './Main';
-import Quiz, { loader as loaderQuiz } from './Quiz';
-import Result from './Result';
-import PathNotFound from './PathNotFound';
-import { CheckUserExist } from '../helpers/helper';
-import QuizHome from './QuizHome';
+import Main from './pages/Main';
+import Quiz, { loader as loaderQuiz } from './pages/Quiz';
+import PathNotFound from './pages/PathNotFound';
+import { CheckUserExist } from './helpers/helper';
+import QuizHome from './pages/QuizHome';
+import ResultOverview from './pages/ResultOverview';
+import AnswersReview from './pages/AnswersReview';
 
 /** react routes **/
 
@@ -15,6 +15,14 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Main />,
+  },
+  {
+    path: '/quiz/home',
+    element: (
+      <CheckUserExist>
+        <QuizHome />
+      </CheckUserExist>
+    ),
   },
   {
     path: '/quiz/:questionGroup',
@@ -29,13 +37,17 @@ const router = createBrowserRouter([
     path: '/result/:userid',
     element: (
       <CheckUserExist>
-        <Result />
+        <ResultOverview />
       </CheckUserExist>
     ),
   },
   {
-    path: '/quiz/home',
-    element: <QuizHome />,
+    path: '/result/review/:userid',
+    element: (
+      <CheckUserExist>
+        <AnswersReview />
+      </CheckUserExist>
+    ),
   },
   {
     path: '*',

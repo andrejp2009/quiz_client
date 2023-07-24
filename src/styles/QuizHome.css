@@ -1,0 +1,6 @@
+/* Additional styles for buttons in QuizHome component */
+.button-container {
+  width: 100%; /* Set the button width to 100% to match the width of the parent container */
+  box-sizing: border-box; /* Include padding and border in the button's total width */
+  margin-top: 15px;
+}

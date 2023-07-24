@@ -1,13 +1,20 @@
+import '../styles/AnswersReview.css';
 import Accordion from 'react-bootstrap/Accordion';
 import React, { useEffect, useState } from 'react';
 import { getServerData } from '../helpers/helper';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { resetAllAction } from '../redux/question_reducer';
+import { resetResultAction } from '../redux/result_reducer';
 
 function AnswersReview() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userId = useSelector((state) => state.result.userId);
   const [resultData, setResultData] = useState(null);
   const [questionsData, setQuestionsData] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   function setRightWrongQuestion(questionAnswer, index) {
     if (questionAnswer.result === questionAnswer.answer && index === questionAnswer.result) {
@@ -21,6 +28,11 @@ function AnswersReview() {
         return 'wrong-answer';
       }
     }
+  }
+  function onRestart() {
+    dispatch(resetAllAction());
+    dispatch(resetResultAction());
+    navigate('/');
   }
 
   useEffect(() => {
@@ -46,7 +58,7 @@ function AnswersReview() {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <>
+        <div className="quiz-container">
           <h1 className="text-center">{`Quiz ${resultData?.questionGroup}`}</h1>
           <h2 className="text-center">{`Username: ${userId}`}</h2>
           <h2 className="text-center">{`Result ${resultData?.points}/${resultData?.questionCount}`}</h2>
@@ -69,7 +81,10 @@ function AnswersReview() {
               </Accordion.Item>
             ))}
           </Accordion>
-        </>
+          <Link className="link-button" to={'/'} onClick={onRestart}>
+            Restart
+          </Link>
+        </div>
       )}
     </>
   );

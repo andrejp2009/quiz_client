@@ -71,7 +71,7 @@ function QuizHome() {
       <button className="button-container" onClick={onRestart}>
         Change User Name
       </button>
-      <button className="button-container">See Results</button>
+      {/* <button className="button-container">See Results</button> */}
     </div>
   );
 }

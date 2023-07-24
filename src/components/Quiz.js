@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import Questions from './Questions';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** redux store import */
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { MoveNextQuestion, MovePrevQuestion } from '../hooks/FetchQuestion';
 import { PushAnswer } from '../hooks/setResult';
 
@@ -13,18 +13,13 @@ function Quiz() {
   const [check, setChecked] = useState(null);
   const result = useSelector((state) => state.result.result);
   const userId = useSelector((state) => state.result.userId);
-  const [questionGroup, setQuestionGroup] = useState(null);
   const { queue, trace } = useSelector((state) => state.questions);
 
-  const quizData = useLoaderData();
+  const questionGroup = useLoaderData();
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const [shouldRedirect, setShouldRedirect] = useState(false);
-
-  useEffect(() => {
-    setQuestionGroup(quizData);
-  });
 
   useEffect(() => {
     if (result.length && result.length >= queue.length) {
@@ -32,10 +27,12 @@ function Quiz() {
     }
   }, [result, queue.length]);
 
-  if (shouldRedirect) {
-    navigate(`/result/${userId}`);
-    return null;
-  }
+  useEffect(() => {
+    if (shouldRedirect) {
+      navigate(`/result/${userId}`);
+    }
+  }, [shouldRedirect, navigate, userId]);
+
   const onClickNext = () => {
     if (trace < queue.length) {
       dispatch(MoveNextQuestion());
@@ -61,16 +58,10 @@ function Quiz() {
     setChecked(check);
   }
 
-  if (result.length && result.length >= queue.length) {
-    // Use navigate() to redirect to the result page
-    navigate(`/result/${userId}`);
-    return null; // Return null here to prevent rendering the Quiz component after navigation
-  }
-
   return (
     <div className="quiz-container">
       {/* display questions*/}
-      <Questions onChecked={onChecked} onUnchecked={check} questionGroup={quizData} />
+      <Questions onChecked={onChecked} onUnchecked={check} questionGroup={questionGroup} />
       <div className="next-prev-button">
         {trace > 0 ? (
           <button className="button-container" onClick={onClickPrev}>

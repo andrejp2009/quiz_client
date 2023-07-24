@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 /** Custom Hook */
 import { useFetchQuestion } from '../hooks/FetchQuestion';
-import { UpdateResult } from '../hooks/setResult';
+// import { UpdateResult } from '../hooks/setResult';
 import { updateResultAction } from '../redux/result_reducer';
 
 function Questions({ onChecked, onUnchecked, questionGroup }) {

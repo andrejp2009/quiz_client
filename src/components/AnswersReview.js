@@ -2,8 +2,6 @@ import Accordion from 'react-bootstrap/Accordion';
 import React, { useEffect, useState } from 'react';
 import { getServerData } from '../helpers/helper';
 import { useSelector } from 'react-redux';
-import { getFetchResultByUserID } from '../hooks/setResult';
-import { getFetchQuestionsResByGroup } from '../hooks/FetchQuestion';
 
 function AnswersReview() {
   const userId = useSelector((state) => state.result.userId);
@@ -12,25 +10,33 @@ function AnswersReview() {
   const [loading, setLoading] = useState(true); // Add loading state
 
   function setRightWrongQuestion(questionAnswer, index) {
-    // ... Same as before
+    if (questionAnswer.result === questionAnswer.answer && index === questionAnswer.result) {
+      return 'right-answer';
+    }
+    if (questionAnswer.result !== questionAnswer.answer) {
+      if (index === questionAnswer.answer) {
+        return 'right-answer';
+      }
+      if (index === questionAnswer.result) {
+        return 'wrong-answer';
+      }
+    }
   }
 
   useEffect(() => {
     getServerData(`${process.env.REACT_APP_SERVER_HOSTNAME}/api/result/${userId}`, (res) => {
       setResultData(res);
-      console.log(res);
 
       if (res?.questionGroup) {
         getServerData(
           `${process.env.REACT_APP_SERVER_HOSTNAME}/api/questions/${res.questionGroup}`,
           (questionsRes) => {
             setQuestionsData(questionsRes);
-            console.log(questionsRes);
-            setLoading(false); // Set loading to false after fetching questions data
+            setLoading(false);
           },
         );
       } else {
-        setLoading(false); // Set loading to false if questionGroup is not available
+        setLoading(false);
       }
     });
   }, [userId]);
@@ -38,7 +44,7 @@ function AnswersReview() {
   return (
     <>
       {loading ? (
-        <div>Loading...</div> // Show loading message when data is being fetched
+        <div>Loading...</div>
       ) : (
         <>
           <h1 className="text-center">{`Quiz ${resultData?.questionGroup}`}</h1>

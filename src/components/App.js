@@ -7,6 +7,7 @@ import Quiz, { loader as loaderQuiz } from './Quiz';
 import Result from './Result';
 import PathNotFound from './PathNotFound';
 import { CheckUserExist } from '../helpers/helper';
+import QuizHome from './QuizHome';
 
 /** react routes **/
 
@@ -33,17 +34,17 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: '/quiz/home',
+    element: <QuizHome />,
+  },
+  {
     path: '*',
     element: <PathNotFound />,
   },
 ]);
 
 function App() {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

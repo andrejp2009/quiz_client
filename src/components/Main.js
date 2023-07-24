@@ -1,16 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
-import { setUserId, setQuestionGroup, resetResultAction } from '../redux/result_reducer';
-import { resetAllAction } from '../redux/question_reducer';
+import { setUserId, setQuestionGroup } from '../redux/result_reducer';
 
 function Main() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef(null);
   const dispatch = useDispatch();
-  const result = useSelector((state) => state.result.result);
 
   const options = [
     { value: 'Programming', label: 'Programming' },
@@ -31,17 +29,17 @@ function Main() {
     }),
   };
 
-  function startQuiz() {
+  const startQuiz = useCallback(() => {
     if (inputValue.trim() !== '') {
       dispatch(setUserId(inputValue.trim()));
       dispatch(setQuestionGroup(selectedOption.value));
     }
-  }
+  }, [inputValue, selectedOption, dispatch]);
 
   // Function to determine if the Link should be disabled
-  const isLinkDisabled = () => {
+  const isLinkDisabled = useCallback(() => {
     return !selectedOption?.value || inputValue.trim() === '';
-  };
+  }, [selectedOption, inputValue]);
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -62,7 +60,7 @@ function Main() {
     return () => {
       inputElement.removeEventListener('keypress', handleKeyPress);
     };
-  }, [isLinkDisabled]);
+  }, [isLinkDisabled, startQuiz]);
 
   return (
     <div className="quiz-container">

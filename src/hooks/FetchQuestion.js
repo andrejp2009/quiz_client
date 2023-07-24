@@ -7,13 +7,11 @@ import * as Action from '../redux/question_reducer';
 
 export const useFetchQuestion = (questionGroup) => {
   const dispatch = useDispatch();
-  const [getData, setGetData] = useState({ isLoading: false, apiData: [], serverError: null });
+  const [data, setData] = useState({ isLoading: false, apiData: [], serverError: null });
 
   useEffect(() => {
-    setGetData((prev) => ({ ...prev, isLoading: true }));
-
-    /** async function fetch backend data */
-    (async () => {
+    const fetchData = async () => {
+      setData((prev) => ({ ...prev, isLoading: true }));
       try {
         const { questions, answers } = await getServerData(
           `${process.env.REACT_APP_SERVER_HOSTNAME}/api/questions/${questionGroup}`,
@@ -21,23 +19,23 @@ export const useFetchQuestion = (questionGroup) => {
         );
 
         if (questions.length > 0) {
-          setGetData((prev) => ({ ...prev, isLoading: false }));
-          setGetData((prev) => ({ ...prev, apiData: questions }));
+          setData({ isLoading: false, apiData: questions, serverError: null });
 
           /** dispatch an action */
           dispatch(Action.startQuizAction({ question: questions, answers }));
         } else {
-          throw new Error('No Question Avalibale');
+          throw new Error('No Questions Available');
         }
       } catch (error) {
         console.log(error);
-        setGetData((prev) => ({ ...prev, isLoading: false }));
-        setGetData((prev) => ({ ...prev, serverError: error }));
+        setData((prev) => ({ ...prev, isLoading: false, serverError: error }));
       }
-    })();
+    };
+
+    fetchData();
   }, [dispatch, questionGroup]);
 
-  return [getData, setGetData];
+  return [data, setData];
 };
 
 export const MoveNextQuestion = () => async (dispatch) => {
@@ -53,39 +51,4 @@ export const MovePrevQuestion = () => async (dispatch) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-export const useFetchQuestionsForResult = (questionGroup) => {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    /** async function fetch backend data */
-    (async () => {
-      try {
-        const fetchedData = await getServerData(
-          `${process.env.REACT_APP_SERVER_HOSTNAME}/api/questions/${questionGroup}`,
-          (data) => data,
-        );
-
-        setData(fetchedData);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
-        // Handle the error if needed
-      }
-    })();
-  }, [questionGroup]);
-
-  return { data, isLoading };
-};
-
-export const getFetchQuestionsResByGroup = async (questionGroup) => {
-  const res = await fetch(
-    `${process.env.REACT_APP_SERVER_HOSTNAME}/api/questions/${questionGroup}`,
-  );
-  return await res.json();
 };

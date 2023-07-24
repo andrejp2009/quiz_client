@@ -69,8 +69,3 @@ export const useFetchResult = (userId) => {
 
   return { data, isLoading };
 };
-
-export const getFetchResultByUserID = async (userId) => {
-  const res = await fetch(`${process.env.REACT_APP_SERVER_HOSTNAME}/api/result/${userId}`);
-  return await res.json();
-};

@@ -1,41 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import AnswersReview from './AnswersReview';
 import { resetAllAction } from '../redux/question_reducer';
-import { resetResultActions } from '../redux/result_reducer';
+import { resetResultAction } from '../redux/result_reducer';
+import { usePublishResult } from '../hooks/setResult';
+import { getRightAnswersCount, combineResultAndAnswers } from '../helpers/helper';
 
-import { useDispatch } from 'react-redux';
 function Result() {
-  const [restartQuiz, setRestartQuiz] = useState(undefined);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.result.userId);
+
+  const answers = useSelector((state) => state.questions.answers);
+  const result = useSelector((state) => state.result.result);
+  const questionGroup = useSelector((state) => state.result.questionGroup);
+
+  const earnPoints = getRightAnswersCount(result, answers);
+  const combinedResult = combineResultAndAnswers(result, answers);
+
+  // State to manage the completion of the post request
+  const [postFinished, setPostFinished] = useState(false);
+
+  // Function to handle the completion of the post request
+  const onComplete = () => {
+    setPostFinished(true);
+    console.log('Post request completed');
+  };
+
+  // Call the hook directly and pass the onComplete callback
+  usePublishResult(
+    {
+      result: combinedResult,
+      username: userId,
+      questionGroup: questionGroup,
+      points: earnPoints,
+      questionCount: answers.length,
+    },
+    onComplete,
+  );
 
   function onRestart() {
-    dispatch(resetAllAction);
-    dispatch(resetResultActions);
-    setRestartQuiz(1);
+    dispatch(resetAllAction());
+    dispatch(resetResultAction());
   }
-  useEffect(() => {
-    //console.log(restartQuiz);
-    if (restartQuiz === 1) {
-      navigate('/');
-    }
-  });
+
   return (
     <div className="quiz-container">
-      <h1 className="text-center">Quiz Result</h1>
+      {postFinished ? (
+        // Render the AnswersReview component only when the post request is finished
+        <AnswersReview />
+      ) : (
+        // Render a loading message while waiting for the post request to finish
+        <div>Loading...</div>
+      )}
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">Result Count</h5>
-          <p className="card-text">You scored 5 out of 5 correct answers.</p>
-        </div>
-      </div>
-
-      <button type="button" onClick={onRestart}>
-        Restart Quiz
-      </button>
+      {postFinished && (
+        // The button is shown only when the post request is finished
+        <Link className="link-button" to={'/'} onClick={onRestart}>
+          Restart
+        </Link>
+      )}
     </div>
   );
 }

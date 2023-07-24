@@ -3,24 +3,41 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 /** import componets **/
 import Main from './Main';
-import Quiz from './Quiz';
+import Quiz, { loader as loaderQuiz } from './Quiz';
 import Result from './Result';
+import PathNotFound from './PathNotFound';
+import { CheckUserExist } from '../helpers/helper';
 
 /** react routes **/
+
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Main></Main>,
+    element: <Main />,
   },
   {
-    path: '/quiz',
-    element: <Quiz></Quiz>,
+    path: '/quiz/:questionGroup',
+    element: (
+      <CheckUserExist>
+        <Quiz />
+      </CheckUserExist>
+    ),
+    loader: loaderQuiz,
   },
   {
-    path: '/result',
-    element: <Result></Result>,
+    path: '/result/:userid',
+    element: (
+      <CheckUserExist>
+        <Result />
+      </CheckUserExist>
+    ),
+  },
+  {
+    path: '*',
+    element: <PathNotFound />,
   },
 ]);
+
 function App() {
   return (
     <>

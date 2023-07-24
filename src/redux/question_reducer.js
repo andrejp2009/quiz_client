@@ -1,4 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+const initialState = {
+  queue: [],
+  answers: [],
+  trace: 0,
+};
 
 export const questionReducer = createSlice({
   name: 'questions',
@@ -29,11 +34,7 @@ export const questionReducer = createSlice({
       };
     },
     resetAllAction: () => {
-      return {
-        queue: [],
-        answers: [],
-        trace: 0,
-      };
+      return initialState;
     },
   },
 });
